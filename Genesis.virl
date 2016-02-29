@@ -3,7 +3,7 @@
     <node name="iosv-1" type="SIMPLE" subtype="IOSv" location="195,228">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 05:41:25 UTC Mon Feb 29 2016
+! Last configuration change at 06:46:49 UTC Mon Feb 29 2016
 !
 version 15.6
 service timestamps debug datetime msec
@@ -77,7 +77,7 @@ crypto map EPCAU 12 ipsec-isakmp
 !
 !
 interface GigabitEthernet0/0
- ip address 10.255.0.21 255.255.0.0
+ ip address 10.255.0.56 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -106,7 +106,7 @@ ip forward-protocol nd
 no ip http server
 no ip http secure-server
 ip route 0.0.0.0 0.0.0.0 GigabitEthernet0/1
-ip route 10.10.27.82 255.255.255.255 203.87.50.66
+ip route 10.0.0.0 255.255.255.0 203.87.50.66
 !
 ip access-list extended EPCAU-GENESIS
  permit ip host 10.10.27.82 10.0.0.0 0.0.0.255
@@ -161,7 +161,7 @@ end</entry>
     <node name="iosv-2" type="SIMPLE" subtype="IOSv" location="358,230">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 05:41:25 UTC Mon Feb 29 2016
+! Last configuration change at 06:46:49 UTC Mon Feb 29 2016
 !
 version 15.6
 service timestamps debug datetime msec
@@ -221,7 +221,7 @@ redundancy
 !
 !
 interface GigabitEthernet0/0
- ip address 10.255.0.18 255.255.0.0
+ ip address 10.255.0.53 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -294,7 +294,7 @@ end</entry>
     <node name="iosv-3" type="SIMPLE" subtype="IOSv" location="529,229">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 05:41:25 UTC Mon Feb 29 2016
+! Last configuration change at 06:46:50 UTC Mon Feb 29 2016
 !
 version 15.6
 service timestamps debug datetime msec
@@ -368,7 +368,7 @@ crypto map GENESIS 1 ipsec-isakmp
 !
 !
 interface GigabitEthernet0/0
- ip address 10.255.0.19 255.255.0.0
+ ip address 10.255.0.54 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -448,7 +448,7 @@ end</entry>
     <node name="iosvl2-1" type="SIMPLE" subtype="IOSvL2" location="139,316">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 05:08:51 UTC Mon Feb 29 2016
+! Last configuration change at 06:46:50 UTC Mon Feb 29 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -480,6 +480,17 @@ no ipv6 cef
 spanning-tree mode rapid-pvst
 spanning-tree extend system-id
 !
+!
+vlan access-map DMZ-LAN 1
+ match ip address GENESIS-ACCESS
+ action forward
+vlan access-map DMZ-LAN 2
+ match ip address ALC-VPN-ACCESS GEN-DROP1
+ action drop
+vlan access-map DMZ-LAN 99
+ action forward
+!
+vlan filter DMZ-LAN vlan-list 7
 vlan internal allocation policy ascending
 !
 ! 
@@ -525,6 +536,15 @@ no ip http server
 no ip http secure-server
 !
 !
+ip access-list extended ALC-VPN-ACCESS
+ permit tcp host 10.10.27.82 eq www 10.129.40.0 0.0.0.255
+ permit tcp host 10.10.27.82 eq 8080 10.129.40.0 0.0.0.255
+ip access-list extended GEN-DROP1
+ permit ip host 10.10.27.82 10.0.0.0 0.0.0.255
+ip access-list extended GENESIS-ACCESS
+ permit tcp host 10.10.27.82 eq www 10.0.0.0 0.0.0.255
+ permit tcp host 10.10.27.82 eq 8080 10.0.0.0 0.0.0.255
+ permit icmp host 10.10.27.82 10.0.0.0 0.0.0.255
 !
 !
 !
@@ -573,7 +593,7 @@ end</entry>
     <node name="iosvl2-2" type="SIMPLE" subtype="IOSvL2" location="606,340">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 05:41:25 UTC Mon Feb 29 2016
+! Last configuration change at 06:46:50 UTC Mon Feb 29 2016
 !
 version 15.2
 service timestamps debug datetime msec
