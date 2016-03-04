@@ -3,7 +3,7 @@
     <node name="iosv-1" type="SIMPLE" subtype="IOSv" location="195,228">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 06:46:49 UTC Mon Feb 29 2016
+! Last configuration change at 06:28:20 UTC Fri Mar 4 2016
 !
 version 15.6
 service timestamps debug datetime msec
@@ -77,8 +77,7 @@ crypto map EPCAU 12 ipsec-isakmp
 !
 !
 interface GigabitEthernet0/0
- ip address 10.255.0.56 255.255.0.0
- shutdown
+ ip address 10.255.0.40 255.255.0.0
  duplex auto
  speed auto
  media-type rj45
@@ -161,7 +160,7 @@ end</entry>
     <node name="iosv-2" type="SIMPLE" subtype="IOSv" location="358,230">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 06:46:49 UTC Mon Feb 29 2016
+! Last configuration change at 06:28:23 UTC Fri Mar 4 2016
 !
 version 15.6
 service timestamps debug datetime msec
@@ -221,7 +220,7 @@ redundancy
 !
 !
 interface GigabitEthernet0/0
- ip address 10.255.0.53 255.255.0.0
+ ip address 10.255.0.42 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -294,7 +293,7 @@ end</entry>
     <node name="iosv-3" type="SIMPLE" subtype="IOSv" location="529,229">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 06:46:50 UTC Mon Feb 29 2016
+! Last configuration change at 06:28:20 UTC Fri Mar 4 2016
 !
 version 15.6
 service timestamps debug datetime msec
@@ -368,8 +367,7 @@ crypto map GENESIS 1 ipsec-isakmp
 !
 !
 interface GigabitEthernet0/0
- ip address 10.255.0.54 255.255.0.0
- shutdown
+ ip address 10.255.0.41 255.255.0.0
  duplex auto
  speed auto
  media-type rj45
@@ -448,7 +446,7 @@ end</entry>
     <node name="iosvl2-1" type="SIMPLE" subtype="IOSvL2" location="139,316">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 06:46:50 UTC Mon Feb 29 2016
+! Last configuration change at 06:28:23 UTC Fri Mar 4 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -593,7 +591,7 @@ end</entry>
     <node name="iosvl2-2" type="SIMPLE" subtype="IOSvL2" location="606,340">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 06:46:50 UTC Mon Feb 29 2016
+! Last configuration change at 06:28:23 UTC Fri Mar 4 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -648,8 +646,16 @@ interface GigabitEthernet0/1
  media-type rj45
  negotiation auto
 !
+interface GigabitEthernet0/2
+ media-type rj45
+ negotiation auto
+!
 interface Vlan1
- ip address 10.0.0.82 255.255.255.0
+ ip address 10.0.0.2 255.255.255.0
+!
+interface Vlan2
+ ip address 10.0.0.81 255.255.255.0
+ shutdown
 !
 ip forward-protocol nd
 !
@@ -701,6 +707,7 @@ line vty 0 4
 end</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
+        <interface id="1" name="GigabitEthernet0/2"/>
     </node>
     <node name="server-1" type="SIMPLE" subtype="server" location="135,389">
         <extensions>
@@ -778,9 +785,84 @@ write_files:
         </extensions>
         <interface id="0" name="eth1" ipv4="10.0.0.10" netPrefixLenV4="30"/>
     </node>
+    <node name="server-2" type="SIMPLE" subtype="server" location="629,398">
+        <extensions>
+            <entry key="AutoNetkit.tunnel_enabled_ipv6" type="Boolean">true</entry>
+            <entry key="AutoNetkit.server_pasword" type="String">cisco</entry>
+            <entry key="AutoNetkit.server_username" type="String">cisco</entry>
+            <entry key="AutoNetkit.server_ssh_key" type="String">cisco</entry>
+            <entry key="config" type="String">#cloud-config
+bootcmd:
+- ln -s -t /etc/rc.d /etc/rc.local
+hostname: server-2
+manage_etc_hosts: true
+runcmd:
+- start ttyS0
+- systemctl start getty@ttyS0.service
+- systemctl start rc-local
+- sed -i '/^\s*PasswordAuthentication\s\+no/d' /etc/ssh/sshd_config
+- echo "UseDNS no" &gt;&gt; /etc/ssh/sshd_config
+- service ssh restart
+- service sshd restart
+users:
+- default
+- gecos: User configured by VIRL Configuration Engine 0.21.6
+  lock-passwd: false
+  name: cisco
+  plain-text-passwd: cisco
+  shell: /bin/bash
+  ssh-authorized-keys:
+  - VIRL-USER-SSH-PUBLIC-KEY
+  - cisco
+  sudo: ALL=(ALL) ALL
+- gecos: User configured by VIRL Configuration Engine 0.21.6
+  lock-passwd: false
+  name: cisco
+  plain-text-passwd: cisco
+  shell: /bin/bash
+  ssh-authorized-keys:
+  - VIRL-USER-SSH-PUBLIC-KEY
+  - cisco
+  sudo: ALL=(ALL) ALL
+write_files:
+- path: /etc/init/ttyS0.conf
+  owner: root:root
+  content: |
+    # ttyS0 - getty
+    # This service maintains a getty on ttyS0 from the point the system is
+    # started until it is shut down again.
+    start on stopped rc or RUNLEVEL=[12345]
+    stop on runlevel [!12345]
+    respawn
+    exec /sbin/getty -L 115200 ttyS0 vt102
+  permissions: '0644'
+- path: /etc/systemd/system/dhclient@.service
+  content: |
+    [Unit]
+    Description=Run dhclient on %i interface
+    After=network.target
+    [Service]
+    Type=oneshot
+    ExecStart=/sbin/dhclient %i -pf /var/run/dhclient.%i.pid -lf /var/lib/dhclient/dhclient.%i.lease
+    RemainAfterExit=yes
+  owner: root:root
+  permissions: '0644'
+- path: /etc/rc.local
+  owner: root:root
+  permissions: '0755'
+  content: |-
+    #!/bin/sh
+    ifconfig eth1 up 10.0.0.91 netmask 255.255.255.0
+    route add -net 10.10.27.0/24 gw 10.0.0.1 dev eth1
+    route default gw 10.0.0.1 eth1
+    exit 0</entry>
+        </extensions>
+        <interface id="0" name="eth1"/>
+    </node>
     <connection dst="/virl:topology/virl:node[2]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[1]"/>
     <connection dst="/virl:topology/virl:node[3]/virl:interface[1]" src="/virl:topology/virl:node[2]/virl:interface[2]"/>
     <connection dst="/virl:topology/virl:node[1]/virl:interface[2]" src="/virl:topology/virl:node[4]/virl:interface[1]"/>
     <connection dst="/virl:topology/virl:node[3]/virl:interface[2]" src="/virl:topology/virl:node[5]/virl:interface[1]"/>
     <connection dst="/virl:topology/virl:node[4]/virl:interface[2]" src="/virl:topology/virl:node[6]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[5]/virl:interface[2]" src="/virl:topology/virl:node[7]/virl:interface[1]"/>
 </topology>
