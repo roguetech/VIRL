@@ -1,23 +1,92 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.9" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.9/virl.xsd">
-    <group name="EPCAU&#xA;" location="192,124">
+    <group name="EPCAU " location="192,124">
         <node name="epcau-router-cisco1" type="SIMPLE" subtype="IOSv" location="459,197">
+            <extensions>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
+            </extensions>
             <interface id="0" name="GigabitEthernet0/1"/>
             <interface id="1" name="GigabitEthernet0/2"/>
         </node>
         <node name="epcau-sw-cisco1" type="SIMPLE" subtype="IOSvL2" location="324,178">
+            <extensions>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
+            </extensions>
             <interface id="0" name="GigabitEthernet0/1"/>
             <interface id="1" name="GigabitEthernet0/2"/>
             <interface id="2" name="GigabitEthernet0/3"/>
         </node>
         <node name="epcau-sw-cisco2" type="SIMPLE" subtype="IOSvL2" location="343,259">
+            <extensions>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
+            </extensions>
             <interface id="0" name="GigabitEthernet0/1"/>
             <interface id="1" name="GigabitEthernet0/2"/>
             <interface id="2" name="GigabitEthernet0/3"/>
             <interface id="3" name="GigabitEthernet1/0"/>
         </node>
         <node name="server-1" type="SIMPLE" subtype="server" location="256,267">
-            <interface id="0" name="eth1"/>
+            <extensions>
+                <entry key="config" type="string">#cloud-config
+bootcmd:
+- ln -s -t /etc/rc.d /etc/rc.local
+hostname: server-1
+manage_etc_hosts: true
+runcmd:
+- start ttyS0
+- systemctl start getty@ttyS0.service
+- systemctl start rc-local
+- sed -i '/^\s*PasswordAuthentication\s\+no/d' /etc/ssh/sshd_config
+- echo "UseDNS no" &gt;&gt; /etc/ssh/sshd_config
+- service ssh restart
+- service sshd restart
+users:
+- default
+- gecos: User configured by VIRL Configuration Engine 0.21.6
+  lock-passwd: false
+  name: cisco
+  plain-text-passwd: cisco
+  shell: /bin/bash
+  ssh-authorized-keys:
+  - VIRL-USER-SSH-PUBLIC-KEY
+  sudo: ALL=(ALL) ALL
+write_files:
+- path: /etc/init/ttyS0.conf
+  owner: root:root
+  content: |
+    # ttyS0 - getty
+    # This service maintains a getty on ttyS0 from the point the system is
+    # started until it is shut down again.
+    start on stopped rc or RUNLEVEL=[12345]
+    stop on runlevel [!12345]
+    respawn
+    exec /sbin/getty -L 115200 ttyS0 vt102
+  permissions: '0644'
+- path: /etc/systemd/system/dhclient@.service
+  content: |
+    [Unit]
+    Description=Run dhclient on %i interface
+    After=network.target
+    [Service]
+    Type=oneshot
+    ExecStart=/sbin/dhclient %i -pf /var/run/dhclient.%i.pid -lf /var/lib/dhclient/dhclient.%i.lease
+    RemainAfterExit=yes
+  owner: root:root
+  permissions: '0644'
+- path: /etc/rc.local
+  owner: root:root
+  permissions: '0755'
+  content: |-
+    #!/bin/sh
+    ifconfig eth1 up 10.0.0.26 netmask 255.255.255.248
+    route add -net 10.0.0.0/16 gw 10.0.0.27 dev eth1
+    route add -net 192.168.0.0/28 gw 10.0.0.27 dev eth1
+    route add -net 10.0.0.0/16 gw 10.0.0.25 dev eth1
+    route add -net 192.168.0.0/28 gw 10.0.0.25 dev eth1
+    exit 0
+</entry>
+            </extensions>
+            <interface id="0" name="eth1" ipv4="10.0.0.26" netPrefixLenV4="29"/>
         </node>
     </group>
     <group name="ALC" location="464,134">
@@ -152,6 +221,7 @@ line vty 0 4
 no scheduler allocate
 !
 end</entry>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
             </extensions>
             <interface id="0" name="GigabitEthernet0/1"/>
             <interface id="1" name="GigabitEthernet0/2"/>
@@ -287,6 +357,7 @@ line vty 0 4
 no scheduler allocate
 !
 end</entry>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
             </extensions>
             <interface id="0" name="GigabitEthernet0/1"/>
             <interface id="1" name="GigabitEthernet0/2"/>
@@ -404,10 +475,12 @@ line vty 0 4
 !
 !
 end</entry>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
             </extensions>
             <interface id="0" name="GigabitEthernet0/1"/>
             <interface id="1" name="GigabitEthernet0/2"/>
             <interface id="2" name="GigabitEthernet0/3"/>
+            <interface id="3" name="GigabitEthernet1/0"/>
         </node>
         <node name="alc-sw-cisco2" type="SIMPLE" subtype="IOSvL2" location="513,301">
             <extensions>
@@ -522,10 +595,113 @@ line vty 0 4
 !
 !
 end</entry>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
             </extensions>
             <interface id="0" name="GigabitEthernet0/1"/>
             <interface id="1" name="GigabitEthernet0/2"/>
             <interface id="2" name="GigabitEthernet0/3"/>
+            <interface id="3" name="GigabitEthernet1/0"/>
+        </node>
+        <node name="alc-sw-arista1" type="SIMPLE" subtype="IOSvL2" location="689,188">
+            <extensions>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
+            </extensions>
+            <interface id="0" name="GigabitEthernet0/1"/>
+            <interface id="1" name="GigabitEthernet0/2"/>
+            <interface id="2" name="GigabitEthernet0/3"/>
+        </node>
+        <node name="alc-sw-arista2" type="SIMPLE" subtype="IOSvL2" location="709,303">
+            <extensions>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
+            </extensions>
+            <interface id="0" name="GigabitEthernet0/1"/>
+            <interface id="1" name="GigabitEthernet0/2"/>
+            <interface id="2" name="GigabitEthernet0/3"/>
+        </node>
+        <node name="alc-srv-005" type="SIMPLE" subtype="server" location="620,243">
+            <extensions>
+                <entry key="AutoNetkit.server_username" type="String">cisco</entry>
+                <entry key="AutoNetkit.server_ssh_key" type="String">cisco</entry>
+                <entry key="config" type="string">#cloud-config
+bootcmd:
+- ln -s -t /etc/rc.d /etc/rc.local
+hostname: alc-srv-005
+manage_etc_hosts: true
+runcmd:
+- start ttyS0
+- systemctl start getty@ttyS0.service
+- systemctl start rc-local
+- sed -i '/^\s*PasswordAuthentication\s\+no/d' /etc/ssh/sshd_config
+- echo "UseDNS no" &gt;&gt; /etc/ssh/sshd_config
+- service ssh restart
+- service sshd restart
+users:
+- default
+- gecos: User configured by VIRL Configuration Engine 0.21.6
+  lock-passwd: false
+  name: cisco
+  plain-text-passwd: cisco
+  shell: /bin/bash
+  ssh-authorized-keys:
+  - VIRL-USER-SSH-PUBLIC-KEY
+  - cisco
+  sudo: ALL=(ALL) ALL
+- gecos: User configured by VIRL Configuration Engine 0.21.6
+  lock-passwd: false
+  name: cisco
+  plain-text-passwd: cisco
+  shell: /bin/bash
+  ssh-authorized-keys:
+  - VIRL-USER-SSH-PUBLIC-KEY
+  - cisco
+  sudo: ALL=(ALL) ALL
+write_files:
+- path: /etc/init/ttyS0.conf
+  owner: root:root
+  content: |
+    # ttyS0 - getty
+    # This service maintains a getty on ttyS0 from the point the system is
+    # started until it is shut down again.
+    start on stopped rc or RUNLEVEL=[12345]
+    stop on runlevel [!12345]
+    respawn
+    exec /sbin/getty -L 115200 ttyS0 vt102
+  permissions: '0644'
+- path: /etc/systemd/system/dhclient@.service
+  content: |
+    [Unit]
+    Description=Run dhclient on %i interface
+    After=network.target
+    [Service]
+    Type=oneshot
+    ExecStart=/sbin/dhclient %i -pf /var/run/dhclient.%i.pid -lf /var/lib/dhclient/dhclient.%i.lease
+    RemainAfterExit=yes
+  owner: root:root
+  permissions: '0644'
+- path: /etc/rc.local
+  owner: root:root
+  permissions: '0755'
+  content: |-
+    #!/bin/sh
+    ifconfig eth1 up 10.0.0.19 netmask 255.255.255.248
+    ifconfig eth2 up 10.0.0.20 netmask 255.255.255.248
+    ifconfig eth3 up 10.0.0.3 netmask 255.255.255.248
+    ifconfig eth4 up 10.0.0.4 netmask 255.255.255.248
+    route add -net 10.0.0.0/16 gw 10.0.0.1 dev eth3
+    route add -net 192.168.0.0/28 gw 10.0.0.1 dev eth3
+    route add -net 10.0.0.0/16 gw 10.0.0.17 dev eth2
+    route add -net 192.168.0.0/28 gw 10.0.0.17 dev eth2
+    route add -net 10.0.0.0/16 gw 10.0.0.2 dev eth3
+    route add -net 192.168.0.0/28 gw 10.0.0.2 dev eth3
+    route add -net 10.0.0.0/16 gw 10.0.0.18 dev eth2
+    route add -net 192.168.0.0/28 gw 10.0.0.18 dev eth2
+    exit 0
+</entry>
+            </extensions>
+            <interface id="0" name="eth1" ipv4="10.0.0.19" netPrefixLenV4="29"/>
+            <interface id="1" name="eth2" ipv4="10.0.0.20" netPrefixLenV4="29"/>
+            <interface id="2" name="eth3" ipv4="10.0.0.3" netPrefixLenV4="29"/>
+            <interface id="3" name="eth4" ipv4="10.0.0.4" netPrefixLenV4="29"/>
         </node>
     </group>
     <group name="Internet" location="332,183">
@@ -666,9 +842,121 @@ line vty 0 4
 no scheduler allocate
 !
 end</entry>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
             </extensions>
             <interface id="0" name="GigabitEthernet0/1"/>
             <interface id="1" name="GigabitEthernet0/2"/>
+        </node>
+    </group>
+    <group name="IDCH" location="614,203">
+        <node name="iosv-1" type="SIMPLE" subtype="IOSv" location="321,215">
+            <extensions>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
+            </extensions>
+            <interface id="0" name="GigabitEthernet0/1"/>
+            <interface id="1" name="GigabitEthernet0/2"/>
+            <interface id="2" name="GigabitEthernet0/3"/>
+        </node>
+        <node name="iosv-2" type="SIMPLE" subtype="IOSv" location="210,230">
+            <extensions>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
+            </extensions>
+            <interface id="0" name="GigabitEthernet0/1"/>
+            <interface id="1" name="GigabitEthernet0/2"/>
+            <interface id="2" name="GigabitEthernet0/3"/>
+        </node>
+        <node name="iosvl2-3" type="SIMPLE" subtype="IOSvL2" location="217,327">
+            <extensions>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
+            </extensions>
+            <interface id="0" name="GigabitEthernet0/1"/>
+            <interface id="1" name="GigabitEthernet0/2"/>
+            <interface id="2" name="GigabitEthernet0/3"/>
+        </node>
+        <node name="iosvl2-4" type="SIMPLE" subtype="IOSvL2" location="350,332">
+            <extensions>
+                <entry key="Auto-generate config" type="Boolean">false</entry>
+            </extensions>
+            <interface id="0" name="GigabitEthernet0/1"/>
+            <interface id="1" name="GigabitEthernet0/2"/>
+            <interface id="2" name="GigabitEthernet0/3"/>
+        </node>
+        <node name="server-3" type="SIMPLE" subtype="server" location="295,420">
+            <extensions>
+                <entry key="AutoNetkit.server_username" type="String">cisco</entry>
+                <entry key="AutoNetkit.server_ssh_key" type="String">cisco</entry>
+                <entry key="config" type="string">#cloud-config
+bootcmd:
+- ln -s -t /etc/rc.d /etc/rc.local
+hostname: server-3
+manage_etc_hosts: true
+runcmd:
+- start ttyS0
+- systemctl start getty@ttyS0.service
+- systemctl start rc-local
+- sed -i '/^\s*PasswordAuthentication\s\+no/d' /etc/ssh/sshd_config
+- echo "UseDNS no" &gt;&gt; /etc/ssh/sshd_config
+- service ssh restart
+- service sshd restart
+users:
+- default
+- gecos: User configured by VIRL Configuration Engine 0.21.6
+  lock-passwd: false
+  name: cisco
+  plain-text-passwd: cisco
+  shell: /bin/bash
+  ssh-authorized-keys:
+  - VIRL-USER-SSH-PUBLIC-KEY
+  - cisco
+  sudo: ALL=(ALL) ALL
+- gecos: User configured by VIRL Configuration Engine 0.21.6
+  lock-passwd: false
+  name: cisco
+  plain-text-passwd: cisco
+  shell: /bin/bash
+  ssh-authorized-keys:
+  - VIRL-USER-SSH-PUBLIC-KEY
+  - cisco
+  sudo: ALL=(ALL) ALL
+write_files:
+- path: /etc/init/ttyS0.conf
+  owner: root:root
+  content: |
+    # ttyS0 - getty
+    # This service maintains a getty on ttyS0 from the point the system is
+    # started until it is shut down again.
+    start on stopped rc or RUNLEVEL=[12345]
+    stop on runlevel [!12345]
+    respawn
+    exec /sbin/getty -L 115200 ttyS0 vt102
+  permissions: '0644'
+- path: /etc/systemd/system/dhclient@.service
+  content: |
+    [Unit]
+    Description=Run dhclient on %i interface
+    After=network.target
+    [Service]
+    Type=oneshot
+    ExecStart=/sbin/dhclient %i -pf /var/run/dhclient.%i.pid -lf /var/lib/dhclient/dhclient.%i.lease
+    RemainAfterExit=yes
+  owner: root:root
+  permissions: '0644'
+- path: /etc/rc.local
+  owner: root:root
+  permissions: '0755'
+  content: |-
+    #!/bin/sh
+    ifconfig eth1 up 10.0.0.11 netmask 255.255.255.248
+    ifconfig eth2 up 10.0.0.12 netmask 255.255.255.248
+    route add -net 10.0.0.0/16 gw 10.0.0.9 dev eth1
+    route add -net 192.168.0.0/28 gw 10.0.0.9 dev eth1
+    route add -net 10.0.0.0/16 gw 10.0.0.10 dev eth1
+    route add -net 192.168.0.0/28 gw 10.0.0.10 dev eth1
+    exit 0
+</entry>
+            </extensions>
+            <interface id="0" name="eth1" ipv4="10.0.0.11" netPrefixLenV4="29"/>
+            <interface id="1" name="eth2" ipv4="10.0.0.12" netPrefixLenV4="29"/>
         </node>
     </group>
     <connection dst="/virl:topology/virl:group[1]/virl:node[1]/virl:interface[1]" src="/virl:topology/virl:group[1]/virl:node[3]/virl:interface[1]"/>
@@ -682,4 +970,17 @@ end</entry>
     <connection dst="/virl:topology/virl:group[2]/virl:node[4]/virl:interface[2]" src="/virl:topology/virl:group[2]/virl:node[3]/virl:interface[2]"/>
     <connection dst="/virl:topology/virl:group[2]/virl:node[4]/virl:interface[3]" src="/virl:topology/virl:group[2]/virl:node[3]/virl:interface[3]"/>
     <connection dst="/virl:topology/virl:group[1]/virl:node[3]/virl:interface[4]" src="/virl:topology/virl:group[1]/virl:node[4]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:group[2]/virl:node[3]/virl:interface[4]" src="/virl:topology/virl:group[2]/virl:node[7]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:group[2]/virl:node[4]/virl:interface[4]" src="/virl:topology/virl:group[2]/virl:node[7]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:group[2]/virl:node[6]/virl:interface[1]" src="/virl:topology/virl:group[2]/virl:node[7]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:group[2]/virl:node[5]/virl:interface[1]" src="/virl:topology/virl:group[2]/virl:node[7]/virl:interface[4]"/>
+    <connection dst="/virl:topology/virl:group[2]/virl:node[6]/virl:interface[2]" src="/virl:topology/virl:group[2]/virl:node[5]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:group[4]/virl:node[3]/virl:interface[1]" src="/virl:topology/virl:group[4]/virl:node[5]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:group[4]/virl:node[5]/virl:interface[2]" src="/virl:topology/virl:group[4]/virl:node[4]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:group[4]/virl:node[4]/virl:interface[2]" src="/virl:topology/virl:group[4]/virl:node[3]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:group[4]/virl:node[2]/virl:interface[1]" src="/virl:topology/virl:group[4]/virl:node[3]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:group[4]/virl:node[1]/virl:interface[1]" src="/virl:topology/virl:group[4]/virl:node[4]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:group[4]/virl:node[2]/virl:interface[2]" src="/virl:topology/virl:group[4]/virl:node[1]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:group[2]/virl:node[6]/virl:interface[3]" src="/virl:topology/virl:group[4]/virl:node[2]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:group[2]/virl:node[5]/virl:interface[3]" src="/virl:topology/virl:group[4]/virl:node[1]/virl:interface[3]"/>
 </topology>
