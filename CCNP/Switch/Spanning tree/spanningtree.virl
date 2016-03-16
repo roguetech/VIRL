@@ -159,7 +159,14 @@ line vty 0 4
  transport input telnet ssh
 !
 !
+<<<<<<< HEAD
+end
+        </entry>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
+=======
 end</entry>
+>>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
@@ -326,7 +333,14 @@ line vty 0 4
  transport input telnet ssh
 !
 !
+<<<<<<< HEAD
+end
+        </entry>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
+=======
 end</entry>
+>>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
@@ -488,7 +502,14 @@ line vty 0 4
  transport input telnet ssh
 !
 !
+<<<<<<< HEAD
+end
+        </entry>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
+=======
 end</entry>
+>>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
@@ -640,7 +661,14 @@ line vty 0 4
  transport input telnet ssh
 !
 !
+<<<<<<< HEAD
+end
+        </entry>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
+=======
 end</entry>
+>>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
@@ -785,7 +813,14 @@ line vty 0 4
  transport input telnet ssh
 !
 !
+<<<<<<< HEAD
+end
+        </entry>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
+=======
 end</entry>
+>>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
@@ -810,7 +845,7 @@ runcmd:
 - service sshd restart
 users:
 - default
-- gecos: User configured by VIRL Configuration Engine 0.20.22
+- gecos: User configured by VIRL Configuration Engine 0.21.6
   lock-passwd: false
   name: cisco
   plain-text-passwd: cisco
@@ -819,7 +854,7 @@ users:
   - VIRL-USER-SSH-PUBLIC-KEY
   - cisco
   sudo: ALL=(ALL) ALL
-- gecos: User configured by VIRL Configuration Engine 0.20.22
+- gecos: User configured by VIRL Configuration Engine 0.21.6
   lock-passwd: false
   name: cisco
   plain-text-passwd: cisco
@@ -859,6 +894,7 @@ write_files:
     ifconfig eth1 up 10.0.0.5 netmask 255.255.255.252
     exit 0
 </entry>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="eth1" ipv4="10.0.0.5" netPrefixLenV4="30"/>
     </node>

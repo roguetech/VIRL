@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.9" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.9/virl.xsd">
-    <extensions>
-        <entry key="AutoNetkit.infrastructure_only" type="Boolean">true</entry>
-    </extensions>
     <node name="iosv-1" type="SIMPLE" subtype="IOSv" location="195,228">
         <extensions>
             <entry key="config" type="String">!
-<<<<<<< HEAD
-! Last configuration change at 11:30:26 UTC Mon Feb 29 2016
-=======
-! Last configuration change at 06:28:20 UTC Fri Mar 4 2016
->>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
+! Last configuration change at 06:46:49 UTC Mon Feb 29 2016
 !
 version 15.6
 service timestamps debug datetime msec
@@ -84,12 +77,8 @@ crypto map EPCAU 12 ipsec-isakmp
 !
 !
 interface GigabitEthernet0/0
-<<<<<<< HEAD
- ip address 10.255.0.9 255.255.0.0
+ ip address 10.255.0.56 255.255.0.0
  shutdown
-=======
- ip address 10.255.0.40 255.255.0.0
->>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
  duplex auto
  speed auto
  media-type rj45
@@ -165,7 +154,6 @@ line vty 0 4
 no scheduler allocate
 !
 end</entry>
-            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
@@ -173,11 +161,7 @@ end</entry>
     <node name="iosv-2" type="SIMPLE" subtype="IOSv" location="358,230">
         <extensions>
             <entry key="config" type="String">!
-<<<<<<< HEAD
-! Last configuration change at 11:30:26 UTC Mon Feb 29 2016
-=======
-! Last configuration change at 06:28:23 UTC Fri Mar 4 2016
->>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
+! Last configuration change at 06:46:49 UTC Mon Feb 29 2016
 !
 version 15.6
 service timestamps debug datetime msec
@@ -237,11 +221,7 @@ redundancy
 !
 !
 interface GigabitEthernet0/0
-<<<<<<< HEAD
- ip address 10.255.0.8 255.255.0.0
-=======
- ip address 10.255.0.42 255.255.0.0
->>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
+ ip address 10.255.0.53 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -307,7 +287,6 @@ line vty 0 4
 no scheduler allocate
 !
 end</entry>
-            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
@@ -315,11 +294,7 @@ end</entry>
     <node name="iosv-3" type="SIMPLE" subtype="IOSv" location="529,229">
         <extensions>
             <entry key="config" type="String">!
-<<<<<<< HEAD
-! Last configuration change at 11:30:25 UTC Mon Feb 29 2016
-=======
-! Last configuration change at 06:28:20 UTC Fri Mar 4 2016
->>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
+! Last configuration change at 06:46:50 UTC Mon Feb 29 2016
 !
 version 15.6
 service timestamps debug datetime msec
@@ -393,12 +368,8 @@ crypto map GENESIS 1 ipsec-isakmp
 !
 !
 interface GigabitEthernet0/0
-<<<<<<< HEAD
- ip address 10.255.0.7 255.255.0.0
+ ip address 10.255.0.54 255.255.0.0
  shutdown
-=======
- ip address 10.255.0.41 255.255.0.0
->>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
  duplex auto
  speed auto
  media-type rj45
@@ -470,7 +441,6 @@ line vty 0 4
 no scheduler allocate
 !
 end</entry>
-            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
@@ -478,11 +448,7 @@ end</entry>
     <node name="iosvl2-1" type="SIMPLE" subtype="IOSvL2" location="139,316">
         <extensions>
             <entry key="config" type="String">!
-<<<<<<< HEAD
-! Last configuration change at 11:30:23 UTC Mon Feb 29 2016
-=======
-! Last configuration change at 06:28:23 UTC Fri Mar 4 2016
->>>>>>> branch 'master' of https://github.com/roguetech/VIRL.git
+! Last configuration change at 06:46:50 UTC Mon Feb 29 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -490,7 +456,7 @@ service timestamps log datetime msec
 no service password-encryption
 service compress-config
 !
-hostname epcau-sw-cisco2
+hostname Switch
 !
 boot-start-marker
 boot-end-marker
@@ -552,7 +518,6 @@ interface GigabitEthernet0/2
 interface GigabitEthernet0/1
  no switchport
  ip address 10.20.1.17 255.255.255.252
- ip access-group NONE-EPOCH-TRAFFIC in
  negotiation auto
 !
 interface Vlan7
@@ -580,14 +545,6 @@ ip access-list extended GENESIS-ACCESS
  permit tcp host 10.10.27.82 eq www 10.0.0.0 0.0.0.255
  permit tcp host 10.10.27.82 eq 8080 10.0.0.0 0.0.0.255
  permit icmp host 10.10.27.82 10.0.0.0 0.0.0.255
-ip access-list extended NONE-EPOCH-TRAFFIC
- permit tcp 10.0.0.0 0.0.0.255 host 10.10.10.2 eq domain
- permit udp 10.0.0.0 0.0.0.255 host 10.10.10.2 eq domain
- permit tcp 10.0.0.0 0.0.0.255 host 10.10.27.82 eq www
- permit icmp 10.0.0.0 0.0.0.255 host 10.10.27.82
- permit tcp 10.0.0.0 0.0.0.255 host 10.10.27.82 eq 8080
- deny   ip 10.0.0.0 0.0.0.255 any
- permit ip any any
 !
 !
 !
@@ -629,7 +586,6 @@ line vty 0 4
 !
 !
 end</entry>
-            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
@@ -637,7 +593,7 @@ end</entry>
     <node name="iosvl2-2" type="SIMPLE" subtype="IOSvL2" location="606,340">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 06:28:23 UTC Fri Mar 4 2016
+! Last configuration change at 06:46:50 UTC Mon Feb 29 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -692,16 +648,8 @@ interface GigabitEthernet0/1
  media-type rj45
  negotiation auto
 !
-interface GigabitEthernet0/2
- media-type rj45
- negotiation auto
-!
 interface Vlan1
- ip address 10.0.0.2 255.255.255.0
-!
-interface Vlan2
- ip address 10.0.0.81 255.255.255.0
- shutdown
+ ip address 10.0.0.82 255.255.255.0
 !
 ip forward-protocol nd
 !
@@ -828,11 +776,10 @@ write_files:
     route default gw 10.10.27.1 eth1
     exit 0
 </entry>
-            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="eth1" ipv4="10.0.0.10" netPrefixLenV4="30"/>
     </node>
-    <node name="server-2" type="SIMPLE" subtype="server" location="629,398">
+    <node name="server-2" type="SIMPLE" subtype="server" location="593,394">
         <extensions>
             <entry key="AutoNetkit.tunnel_enabled_ipv6" type="Boolean">true</entry>
             <entry key="AutoNetkit.server_pasword" type="String">cisco</entry>
@@ -878,7 +825,7 @@ write_files:
     # ttyS0 - getty
     # This service maintains a getty on ttyS0 from the point the system is
     # started until it is shut down again.
-    start on stopped rc or RUNLEVEL=[12345]
+start on stopped rc or RUNLEVEL=[12345]
     stop on runlevel [!12345]
     respawn
     exec /sbin/getty -L 115200 ttyS0 vt102
@@ -899,11 +846,12 @@ write_files:
   permissions: '0755'
   content: |-
     #!/bin/sh
-    ifconfig eth1 up 10.0.0.91 netmask 255.255.255.0
-    route add -net 10.10.27.0/24 gw 10.0.0.1 dev eth1
-    route default gw 10.0.0.1 eth1
-    exit 0</entry>
-            <entry key="Auto-generate config" type="Boolean">false</entry>
+    ifconfig eth1 up 10.10.27.82 netmask 255.255.255.0
+    route add -net 10.0.0.0/24 gw 10.10.27.1 dev eth1
+    route add -net 10.20.1.0/24 gw 10.10.27.1 dev eth1
+    route default gw 10.10.27.1 eth1
+    exit 0
+	</entry>
         </extensions>
         <interface id="0" name="eth1"/>
     </node>
