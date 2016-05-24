@@ -1,125 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.9" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.9/virl.xsd">
-    <node name="iosvl2-1" type="SIMPLE" subtype="IOSvL2" location="107,210">
+    <node name="iosvl2-1" type="SIMPLE" subtype="IOSvL2" location="714,487">
         <extensions>
-            <entry key="config" type="String">!
-! Last configuration change at 11:25:55 UTC Sun Mar 13 2016
-!
-version 15.2
-service timestamps debug datetime msec
-service timestamps log datetime msec
-no service password-encryption
-service compress-config
-!
-hostname cisco2-1
-!
-boot-start-marker
-boot-end-marker
-!
-!
-!
-no aaa new-model
-!
-!
-!
-!
-!
-!
-!
-!
-ip cef
-no ipv6 cef
-!
-!
-!
-spanning-tree mode rapid-pvst
-spanning-tree extend system-id
-!
-vlan internal allocation policy ascending
-!
-! 
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-interface GigabitEthernet0/0
- media-type rj45
- negotiation auto
-!
-interface GigabitEthernet0/1
- media-type rj45
- negotiation auto
-!
-interface Vlan1
- ip address 10.1.1.2 255.255.255.252
-!
-ip forward-protocol nd
-!
-no ip http server
-no ip http secure-server
-!
-!
-!
-!
-!
-!
-control-plane
-!
-banner exec `
-**************************************************************************
-* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
-* education. IOSv is provided as-is and is not supported by Cisco's      *
-* Technical Advisory Center. Any use or disclosure, in whole or in part, *
-* of the IOSv Software or Documentation to any third party for any       *
-* purposes is expressly prohibited except as otherwise authorized by     *
-* Cisco in writing.                                                      *
-**************************************************************************`
-banner incoming `
-**************************************************************************
-* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
-* education. IOSv is provided as-is and is not supported by Cisco's      *
-* Technical Advisory Center. Any use or disclosure, in whole or in part, *
-* of the IOSv Software or Documentation to any third party for any       *
-* purposes is expressly prohibited except as otherwise authorized by     *
-* Cisco in writing.                                                      *
-**************************************************************************`
-banner login `
-**************************************************************************
-* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
-* education. IOSv is provided as-is and is not supported by Cisco's      *
-* Technical Advisory Center. Any use or disclosure, in whole or in part, *
-* of the IOSv Software or Documentation to any third party for any       *
-* purposes is expressly prohibited except as otherwise authorized by     *
-* Cisco in writing.                                                      *
-**************************************************************************`
-!
-line con 0
-line aux 0
-line vty 0 4
-!
-!
-end</entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
-        </extensions>
-        <interface id="0" name="GigabitEthernet0/1"/>
-        <interface id="1" name="GigabitEthernet0/2"/>
-        <interface id="2" name="GigabitEthernet0/3"/>
-        <interface id="3" name="GigabitEthernet1/0"/>
-        <interface id="4" name="GigabitEthernet1/1"/>
-        <interface id="5" name="GigabitEthernet1/2"/>
-    </node>
-    <node name="iosvl2-2" type="SIMPLE" subtype="IOSvL2" location="236,214">
-        <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 11:25:57 UTC Sun Mar 13 2016
+! Last configuration change at 12:49:42 UTC Fri Apr 15 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -171,11 +56,24 @@ interface GigabitEthernet0/0
  negotiation auto
 !
 interface GigabitEthernet0/1
+ switchport access vlan 10
  media-type rj45
  negotiation auto
 !
-interface Vlan1
- ip address 10.1.1.1 255.255.255.252
+interface GigabitEthernet0/2
+ switchport access vlan 20
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/3
+ switchport access vlan 20
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ switchport access vlan 10
+ media-type rj45
+ negotiation auto
 !
 ip forward-protocol nd
 !
@@ -189,27 +87,184 @@ no ip http secure-server
 !
 control-plane
 !
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
 !
 line con 0
- exec-timeout 180 0
- logging synchronous
 line aux 0
 line vty 0 4
+ login
 !
 !
 end</entry>
-            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
         <interface id="2" name="GigabitEthernet0/3"/>
         <interface id="3" name="GigabitEthernet1/0"/>
-        <interface id="4" name="GigabitEthernet1/1"/>
-        <interface id="5" name="GigabitEthernet1/2"/>
     </node>
-    <node name="server-1" type="SIMPLE" subtype="server" location="372,195">
+    <node name="iosv-1" type="SIMPLE" subtype="IOSv" location="1054,470">
         <extensions>
-            <entry key="config" type="string">#cloud-config
+            <entry key="Auto-generate config" type="Boolean">false</entry>
+            <entry key="config" type="String">!
+! Last configuration change at 12:51:44 UTC Fri Apr 15 2016
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname Router
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ ip address 10.255.0.44 255.255.0.0
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ ip address 10.1.20.1 255.255.255.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ ip address 10.1.10.1 255.255.255.0
+ duplex auto
+ speed auto
+ media-type rj45
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+ transport input none
+!
+no scheduler allocate
+!
+end</entry>
+        </extensions>
+        <interface id="0" name="GigabitEthernet0/1"/>
+        <interface id="1" name="GigabitEthernet0/2"/>
+    </node>
+    <node name="server-1" type="SIMPLE" subtype="server" location="436,392">
+        <extensions>
+            <entry key="config" type="String">#cloud-config
 bootcmd:
 - ln -s -t /etc/rc.d /etc/rc.local
 hostname: server-1
@@ -224,7 +279,7 @@ runcmd:
 - service sshd restart
 users:
 - default
-- gecos: User configured by VIRL Configuration Engine 0.21.7
+- gecos: User configured by VIRL Configuration Engine 0.21.6
   lock-passwd: false
   name: cisco
   plain-text-passwd: cisco
@@ -260,15 +315,20 @@ write_files:
   permissions: '0755'
   content: |-
     #!/bin/sh
-    ifconfig eth1 up 10.0.0.5 netmask 255.255.255.252
+    ifconfig eth1 up 10.1.10.50 netmask 255.255.255.0
+    route add -net 10.1.20.0/24 gw 10.1.10.1 dev eth1
+    route add -net 10.0.0.0/16 gw 10.0.0.1 dev eth1
+    route add -net 192.168.0.0/29 gw 10.0.0.1 dev eth1
+    route add -net 10.0.0.0/16 gw 10.0.0.2 dev eth1
+    route add -net 192.168.0.0/29 gw 10.0.0.2 dev eth1
     exit 0
 </entry>
         </extensions>
-        <interface id="0" name="eth1" ipv4="10.0.0.5" netPrefixLenV4="30"/>
+        <interface id="0" name="eth1" ipv4="10.0.0.3" netPrefixLenV4="16"/>
     </node>
-    <node name="server-2" type="SIMPLE" subtype="server" location="11,191">
+    <node name="server-2" type="SIMPLE" subtype="server" location="453,582">
         <extensions>
-            <entry key="config" type="string">#cloud-config
+            <entry key="config" type="String">#cloud-config
 bootcmd:
 - ln -s -t /etc/rc.d /etc/rc.local
 hostname: server-2
@@ -283,7 +343,7 @@ runcmd:
 - service sshd restart
 users:
 - default
-- gecos: User configured by VIRL Configuration Engine 0.21.7
+- gecos: User configured by VIRL Configuration Engine 0.21.6
   lock-passwd: false
   name: cisco
   plain-text-passwd: cisco
@@ -319,17 +379,18 @@ write_files:
   permissions: '0755'
   content: |-
     #!/bin/sh
-    ifconfig eth1 up 10.0.0.6 netmask 255.255.255.252
+    ifconfig eth1 up 10.1.20.50 netmask 255.255.255.0
+    route add -net 10.1.10.0/24 gw 10.1.20.1 dev eth1
+    route add -net 192.168.0.0/29 gw 10.0.0.1 dev eth1
+    route add -net 10.0.0.0/16 gw 10.0.0.2 dev eth1
+    route add -net 192.168.0.0/29 gw 10.0.0.2 dev eth1
     exit 0
 </entry>
         </extensions>
-        <interface id="0" name="eth1" ipv4="10.0.0.6" netPrefixLenV4="30"/>
+        <interface id="0" name="eth1" ipv4="10.0.0.4" netPrefixLenV4="16"/>
     </node>
-    <connection dst="/virl:topology/virl:node[2]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[1]"/>
-    <connection dst="/virl:topology/virl:node[2]/virl:interface[2]" src="/virl:topology/virl:node[1]/virl:interface[2]"/>
-    <connection dst="/virl:topology/virl:node[2]/virl:interface[3]" src="/virl:topology/virl:node[1]/virl:interface[3]"/>
-    <connection dst="/virl:topology/virl:node[2]/virl:interface[4]" src="/virl:topology/virl:node[1]/virl:interface[4]"/>
-    <connection dst="/virl:topology/virl:node[2]/virl:interface[5]" src="/virl:topology/virl:node[1]/virl:interface[5]"/>
-    <connection dst="/virl:topology/virl:node[1]/virl:interface[6]" src="/virl:topology/virl:node[4]/virl:interface[1]"/>
-    <connection dst="/virl:topology/virl:node[2]/virl:interface[6]" src="/virl:topology/virl:node[3]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[1]/virl:interface[1]" src="/virl:topology/virl:node[3]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[1]/virl:interface[2]" src="/virl:topology/virl:node[4]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[2]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:node[2]/virl:interface[2]" src="/virl:topology/virl:node[1]/virl:interface[4]"/>
 </topology>
