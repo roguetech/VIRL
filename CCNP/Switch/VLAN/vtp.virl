@@ -1,121 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.9" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.9/virl.xsd">
-    <node name="iosvl2-1" type="SIMPLE" subtype="IOSvL2" location="160,230">
-        <extensions>
-            <entry key="config" type="String">!
-! Last configuration change at 05:21:22 UTC Sun Apr 24 2016
-!
-version 15.2
-service timestamps debug datetime msec
-service timestamps log datetime msec
-no service password-encryption
-service compress-config
-!
-hostname sw1
-!
-boot-start-marker
-boot-end-marker
-!
-!
-!
-no aaa new-model
-!
-!
-!
-!
-!
-!
-!
-!
-no ip domain-lookup
-ip cef
-no ipv6 cef
-!
-!
-!
-spanning-tree mode rapid-pvst
-spanning-tree extend system-id
-!
-vlan internal allocation policy ascending
-!
-! 
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-interface GigabitEthernet0/0
- media-type rj45
- negotiation auto
-!
-interface GigabitEthernet0/1
- switchport trunk encapsulation dot1q
- switchport mode trunk
- media-type rj45
- negotiation auto
-!
-ip forward-protocol nd
-!
-no ip http server
-no ip http secure-server
-!
-!
-!
-!
-!
-!
-control-plane
-!
-banner exec `
-**************************************************************************
-* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
-* education. IOSv is provided as-is and is not supported by Cisco's      *
-* Technical Advisory Center. Any use or disclosure, in whole or in part, *
-* of the IOSv Software or Documentation to any third party for any       *
-* purposes is expressly prohibited except as otherwise authorized by     *
-* Cisco in writing.                                                      *
-**************************************************************************`
-banner incoming `
-**************************************************************************
-* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
-* education. IOSv is provided as-is and is not supported by Cisco's      *
-* Technical Advisory Center. Any use or disclosure, in whole or in part, *
-* of the IOSv Software or Documentation to any third party for any       *
-* purposes is expressly prohibited except as otherwise authorized by     *
-* Cisco in writing.                                                      *
-**************************************************************************`
-banner login `
-**************************************************************************
-* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
-* education. IOSv is provided as-is and is not supported by Cisco's      *
-* Technical Advisory Center. Any use or disclosure, in whole or in part, *
-* of the IOSv Software or Documentation to any third party for any       *
-* purposes is expressly prohibited except as otherwise authorized by     *
-* Cisco in writing.                                                      *
-**************************************************************************`
-!
-line con 0
- exec-timeout 60 0
-line aux 0
-line vty 0 4
- login
-!
-!
-end</entry>
-        </extensions>
-        <interface id="0" name="GigabitEthernet0/1"/>
-    </node>
     <node name="iosvl2-2" type="SIMPLE" subtype="IOSvL2" location="325,237">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 05:21:12 UTC Sun Apr 24 2016
+! Last configuration change at 01:11:54 UTC Wed May 25 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -136,7 +24,7 @@ no aaa new-model
 !
 !
 !
-vtp domain roguetech
+vtp domain cbt
 vtp mode transparent
 !
 !
@@ -172,12 +60,14 @@ interface GigabitEthernet0/0
 interface GigabitEthernet0/1
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport nonegotiate
  media-type rj45
  negotiation auto
 !
 interface GigabitEthernet0/2
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport nonegotiate
  media-type rj45
  negotiation auto
 !
@@ -237,7 +127,7 @@ end</entry>
     <node name="iosvl2-3" type="SIMPLE" subtype="IOSvL2" location="491,239">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 05:21:30 UTC Sun Apr 24 2016
+! Last configuration change at 01:11:44 UTC Wed May 25 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -292,8 +182,12 @@ interface GigabitEthernet0/0
 interface GigabitEthernet0/1
  switchport trunk encapsulation dot1q
  switchport mode trunk
+ switchport nonegotiate
  media-type rj45
  negotiation auto
+!
+interface Vlan3
+ ip address 3.3.3.3 255.255.255.0
 !
 ip forward-protocol nd
 !
@@ -347,6 +241,119 @@ end</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
     </node>
-    <connection dst="/virl:topology/virl:node[2]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[1]"/>
-    <connection dst="/virl:topology/virl:node[3]/virl:interface[1]" src="/virl:topology/virl:node[2]/virl:interface[2]"/>
+    <node name="iosvl2-1" type="SIMPLE" subtype="IOSvL2" location="160,230">
+        <extensions>
+            <entry key="config" type="String">!
+! Last configuration change at 01:11:54 UTC Wed May 25 2016
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname sw1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip cef
+no ipv6 cef
+!
+!
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ media-type rj45
+ negotiation auto
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+control-plane
+!
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+!
+line con 0
+ exec-timeout 60 0
+line aux 0
+line vty 0 4
+ login
+!
+!
+end</entry>
+        </extensions>
+        <interface id="0" name="GigabitEthernet0/1"/>
+    </node>
+    <connection dst="/virl:topology/virl:node[2]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:node[1]/virl:interface[1]" src="/virl:topology/virl:node[3]/virl:interface[1]"/>
 </topology>
