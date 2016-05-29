@@ -4,7 +4,7 @@
         <extensions>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 23:23:47 UTC Fri May 27 2016
+! Last configuration change at 00:35:38 UTC Sat May 28 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -12,7 +12,7 @@ service timestamps log datetime msec
 no service password-encryption
 service compress-config
 !
-hostname Switch
+hostname SW3
 !
 boot-start-marker
 boot-end-marker
@@ -28,6 +28,7 @@ no aaa new-model
 !
 !
 !
+no ip domain-lookup
 ip cef
 no ipv6 cef
 !
@@ -70,8 +71,13 @@ interface GigabitEthernet0/2
  negotiation auto
 !
 interface GigabitEthernet0/3
- switchport access vlan 10
- switchport mode access
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
  media-type rj45
  negotiation auto
 !
@@ -89,6 +95,8 @@ control-plane
 !
 !
 line con 0
+ exec-timeout 60 0
+ logging synchronous
 line aux 0
 line vty 0 4
 !
@@ -98,12 +106,13 @@ end</entry>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
         <interface id="2" name="GigabitEthernet0/3"/>
+        <interface id="3" name="GigabitEthernet1/0"/>
     </node>
     <node name="SW4" type="SIMPLE" subtype="IOSvL2" location="648,259">
         <extensions>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 23:23:43 UTC Fri May 27 2016
+! Last configuration change at 00:35:43 UTC Sat May 28 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -163,6 +172,10 @@ interface GigabitEthernet0/2
  negotiation auto
 !
 interface GigabitEthernet0/3
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/0
  media-type rj45
  negotiation auto
 !
@@ -216,6 +229,7 @@ end</entry>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
         <interface id="2" name="GigabitEthernet0/3"/>
+        <interface id="3" name="GigabitEthernet1/0"/>
     </node>
     <node name="server-1" type="SIMPLE" subtype="server" location="204,291">
         <extensions>
@@ -340,7 +354,7 @@ write_files:
     <node name="SW1" type="SIMPLE" subtype="IOSvL2" location="471,190">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 23:23:48 UTC Fri May 27 2016
+! Last configuration change at 00:36:23 UTC Sat May 28 2016
 !
 version 15.2
 service timestamps debug datetime msec
@@ -410,12 +424,14 @@ interface GigabitEthernet0/2
  negotiation auto
 !
 interface Vlan10
- ip address 10.0.10.1 255.255.255.0
- vrrp 1 ip 10.0.10.1
- vrrp 1 timers advertise msec 200
- vrrp 1 priority 110
- vrrp 1 authentication text Passwor
- vrrp 1 track 1 decrement 20
+ ip address 10.0.10.2 255.255.255.0
+ glbp 1 ip 10.0.10.1
+ glbp 1 timers msec 200 msec 700
+ glbp 1 priority 110
+ glbp 1 preempt
+ glbp 1 weighting 110 lower 95 upper 105
+ glbp 1 authentication md5 key-string Password1
+ glbp 1 weighting track 1 decrement 20
 !
 ip forward-protocol nd
 !
@@ -429,6 +445,33 @@ no ip http secure-server
 !
 control-plane
 !
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
 !
 line con 0
  exec-timeout 60 0
@@ -445,12 +488,12 @@ end</entry>
     <node name="SW2" type="SIMPLE" subtype="IOSvL2" location="495,352">
         <extensions>
             <entry key="config" type="String">!
-! Last configuration change at 23:23:57 UTC Fri May 27 2016
+! Last configuration change at 00:36:18 UTC Sat May 28 2016
 !
 version 15.2
 service timestamps debug datetime msec
 service timestamps log datetime msec
-no service password-encryption
+service password-encryption
 service compress-config
 !
 hostname SW2
@@ -512,10 +555,11 @@ interface GigabitEthernet0/2
  negotiation auto
 !
 interface Vlan10
- ip address 10.0.10.2 255.255.255.0
- vrrp 1 ip 10.0.10.1
- vrrp 1 timers advertise msec 200
- vrrp 1 authentication text Passwor
+ ip address 10.0.10.4 255.255.255.0
+ glbp 1 ip 10.0.10.1
+ glbp 1 timers msec 200 msec 700
+ glbp 1 preempt
+ glbp 1 authentication md5 key-string 7 01230717481C091D251D
 !
 ip forward-protocol nd
 !
@@ -542,10 +586,141 @@ end</entry>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
     </node>
+    <node name="SW5" type="SIMPLE" subtype="IOSvL2" location="466,276">
+        <extensions>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
+            <entry key="config" type="String">!
+! Last configuration change at 00:36:22 UTC Sat May 28 2016
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname SW5
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+ip cef
+no ipv6 cef
+!
+!
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport nonegotiate
+ media-type rj45
+ negotiation auto
+!
+interface Vlan10
+ ip address 10.0.10.3 255.255.255.0
+ glbp 1 ip 10.0.10.1
+ glbp 1 timers msec 200 msec 700
+ glbp 1 preempt
+ glbp 1 authentication md5 key-string Password1
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+control-plane
+!
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+!
+line con 0
+ exec-timeout 60 0
+ logging synchronous
+line aux 0
+line vty 0 4
+!
+!
+end</entry>
+        </extensions>
+        <interface id="0" name="GigabitEthernet0/1"/>
+        <interface id="1" name="GigabitEthernet0/2"/>
+    </node>
     <connection dst="/virl:topology/virl:node[3]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[3]"/>
     <connection dst="/virl:topology/virl:node[4]/virl:interface[1]" src="/virl:topology/virl:node[2]/virl:interface[3]"/>
     <connection dst="/virl:topology/virl:node[5]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[1]"/>
     <connection dst="/virl:topology/virl:node[6]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[2]"/>
     <connection dst="/virl:topology/virl:node[2]/virl:interface[1]" src="/virl:topology/virl:node[6]/virl:interface[2]"/>
     <connection dst="/virl:topology/virl:node[2]/virl:interface[2]" src="/virl:topology/virl:node[5]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:node[1]/virl:interface[4]" src="/virl:topology/virl:node[7]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[2]/virl:interface[4]" src="/virl:topology/virl:node[7]/virl:interface[2]"/>
 </topology>
