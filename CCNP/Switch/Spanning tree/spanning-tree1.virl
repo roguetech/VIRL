@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.9" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.9/virl.xsd">
+<topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.95" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.95/virl.xsd">
     <node name="iosvl2-1" type="SIMPLE" subtype="IOSvL2" location="224,153">
         <extensions>
             <entry key="config" type="String">!
@@ -120,9 +120,11 @@ line vty 0 4
 !
 !
 end</entry>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
+        <interface id="2" name="GigabitEthernet0/3"/>
     </node>
     <node name="iosvl2-2" type="SIMPLE" subtype="IOSvL2" location="380,154">
         <extensions>
@@ -249,10 +251,12 @@ line vty 0 4
 !
 !
 end</entry>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
         <interface id="2" name="GigabitEthernet0/3"/>
+        <interface id="3" name="GigabitEthernet1/0"/>
     </node>
     <node name="iosvl2-4" type="SIMPLE" subtype="IOSvL2" location="448,93">
         <extensions>
@@ -367,6 +371,7 @@ line vty 0 4
 !
 !
 end</entry>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
@@ -480,12 +485,77 @@ line vty 0 4
 !
 !
 end</entry>
+            <entry key="Auto-generate config" type="Boolean">false</entry>
         </extensions>
         <interface id="0" name="GigabitEthernet0/1"/>
         <interface id="1" name="GigabitEthernet0/2"/>
     </node>
+    <node name="server-1" type="SIMPLE" subtype="server" location="274,261">
+        <extensions>
+            <entry key="config" type="String">#cloud-config
+bootcmd:
+- ln -s -t /etc/rc.d /etc/rc.local
+hostname: server-1
+manage_etc_hosts: true
+runcmd:
+- start ttyS0
+- systemctl start getty@ttyS0.service
+- systemctl start rc-local
+- sed -i '/^\s*PasswordAuthentication\s\+no/d' /etc/ssh/sshd_config
+- echo "UseDNS no" &gt;&gt; /etc/ssh/sshd_config
+- service ssh restart
+- service sshd restart
+users:
+- default
+- gecos: User configured by VIRL Configuration Engine 0.23.9
+  lock-passwd: false
+  name: cisco
+  plain-text-passwd: cisco
+  shell: /bin/bash
+  ssh-authorized-keys:
+  - VIRL-USER-SSH-PUBLIC-KEY
+  sudo: ALL=(ALL) ALL
+write_files:
+- path: /etc/init/ttyS0.conf
+  owner: root:root
+  content: |
+    # ttyS0 - getty
+    # This service maintains a getty on ttyS0 from the point the system is
+    # started until it is shut down again.
+    start on stopped rc or RUNLEVEL=[12345]
+    stop on runlevel [!12345]
+    respawn
+    exec /sbin/getty -L 115200 ttyS0 vt102
+  permissions: '0644'
+- path: /etc/systemd/system/dhclient@.service
+  content: |
+    [Unit]
+    Description=Run dhclient on %i interface
+    After=network.target
+    [Service]
+    Type=oneshot
+    ExecStart=/sbin/dhclient %i -pf /var/run/dhclient.%i.pid -lf /var/lib/dhclient/dhclient.%i.lease
+    RemainAfterExit=yes
+  owner: root:root
+  permissions: '0644'
+- path: /etc/rc.local
+  owner: root:root
+  permissions: '0755'
+  content: |-
+    #!/bin/sh
+    ifconfig eth1 up 10.0.0.5 netmask 255.255.255.0
+    ip route add 11.11.11.0/24 dev eth1
+    exit 0
+</entry>
+        </extensions>
+        <interface id="0" name="eth1" ipv4="10.0.0.5" netPrefixLenV4="30"/>
+        <interface id="1" name="eth2"/>
+    </node>
+    <annotations/>
     <connection dst="/virl:topology/virl:node[1]/virl:interface[2]" src="/virl:topology/virl:node[2]/virl:interface[2]"/>
     <connection dst="/virl:topology/virl:node[2]/virl:interface[3]" src="/virl:topology/virl:node[3]/virl:interface[2]"/>
     <connection dst="/virl:topology/virl:node[3]/virl:interface[3]" src="/virl:topology/virl:node[4]/virl:interface[1]"/>
     <connection dst="/virl:topology/virl:node[1]/virl:interface[1]" src="/virl:topology/virl:node[2]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[1]/virl:interface[3]" src="/virl:topology/virl:node[5]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[2]/virl:interface[4]" src="/virl:topology/virl:node[5]/virl:interface[2]"/>
 </topology>
