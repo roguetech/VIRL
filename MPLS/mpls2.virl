@@ -249,7 +249,7 @@ write_files:
             <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 17:11:05 UTC Wed Nov 8 2017
+! Last configuration change at 18:34:32 UTC Thu Nov 9 2017
 !
 version 15.6
 service timestamps debug datetime msec
@@ -313,7 +313,7 @@ interface Loopback1
  ip ospf 1 area 0
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.255.0.81 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -425,7 +425,7 @@ end</entry>
             <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 17:11:45 UTC Wed Nov 8 2017
+! Last configuration change at 18:33:45 UTC Thu Nov 9 2017
 !
 version 15.6
 service timestamps debug datetime msec
@@ -489,7 +489,7 @@ interface Loopback1
  ip ospf 1 area 0
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.255.0.82 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -610,7 +610,7 @@ end</entry>
             <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 17:10:32 UTC Wed Nov 8 2017
+! Last configuration change at 18:34:42 UTC Thu Nov 9 2017
 !
 version 15.6
 service timestamps debug datetime msec
@@ -674,7 +674,7 @@ interface Loopback1
  ip ospf 1 area 0
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.255.0.83 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -786,7 +786,7 @@ end</entry>
             <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 17:12:39 UTC Wed Nov 8 2017
+! Last configuration change at 18:42:23 UTC Thu Nov 9 2017
 !
 version 15.6
 service timestamps debug datetime msec
@@ -806,6 +806,14 @@ vrf definition 101:KP
   route-target export 5.5.5.5:101
   route-target import 5.5.5.5:101
   route-target import 4.4.4.4:101
+ exit-address-family
+!
+vrf definition 102:FT
+ rd 5.5.5.5:102
+ !
+ address-family ipv4
+  route-target export 5.5.5.5:102
+  route-target import 4.4.4.4:102
  exit-address-family
 !
 !
@@ -833,6 +841,7 @@ ip cef
 no ipv6 cef
 !
 multilink bundle-name authenticated
+no mpls ip propagate-ttl 
 !
 !
 !
@@ -840,6 +849,9 @@ multilink bundle-name authenticated
 !
 redundancy
 !
+!
+pseudowire-class FT-NewYork-Sydney
+ encapsulation mpls
 !
 ! 
 !
@@ -859,7 +871,7 @@ interface Loopback1
  ip ospf 1 area 0
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.255.0.85 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -883,10 +895,10 @@ interface GigabitEthernet0/2
 !
 interface GigabitEthernet0/3
  no ip address
- shutdown
  duplex auto
  speed auto
  media-type rj45
+ xconnect 4.4.4.4 102 encapsulation mpls pw-class FT-NewYork-Sydney
 !
 router ospf 101 vrf 101:KP
  redistribute bgp 64123 subnets
@@ -1000,7 +1012,7 @@ end</entry>
             <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 17:08:13 UTC Wed Nov 8 2017
+! Last configuration change at 18:33:40 UTC Thu Nov 9 2017
 !
 version 15.6
 service timestamps debug datetime msec
@@ -1019,6 +1031,14 @@ vrf definition 101:KP
  address-family ipv4
   route-target export 4.4.4.4:101
   route-target import 5.5.5.5:101
+ exit-address-family
+!
+vrf definition 102:FT
+ rd 4.4.4.4:102
+ !
+ address-family ipv4
+  route-target export 4.4.4.4:102
+  route-target import 5.5.5.5:102
  exit-address-family
 !
 !
@@ -1047,6 +1067,7 @@ ip cef
 no ipv6 cef
 !
 multilink bundle-name authenticated
+no mpls ip propagate-ttl 
 !
 !
 !
@@ -1054,6 +1075,9 @@ multilink bundle-name authenticated
 !
 redundancy
 !
+!
+pseudowire-class FT-NewYork-Sydney
+ encapsulation mpls
 !
 ! 
 !
@@ -1073,7 +1097,7 @@ interface Loopback1
  ip ospf 1 area 0
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.255.0.84 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -1092,6 +1116,7 @@ interface GigabitEthernet0/2
  duplex auto
  speed auto
  media-type rj45
+ xconnect 5.5.5.5 102 encapsulation mpls pw-class FT-NewYork-Sydney
 !
 interface GigabitEthernet0/3
  description Connection to KP NewYork
@@ -1213,7 +1238,7 @@ end</entry>
             <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 17:07:18 UTC Wed Nov 8 2017
+! Last configuration change at 18:32:54 UTC Thu Nov 9 2017
 !
 version 15.6
 service timestamps debug datetime msec
@@ -1273,7 +1298,7 @@ redundancy
 !
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.255.0.73 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -1382,14 +1407,14 @@ end</entry>
             <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 17:13:32 UTC Wed Nov 8 2017
+! Last configuration change at 18:35:18 UTC Thu Nov 9 2017
 !
 version 15.6
 service timestamps debug datetime msec
 service timestamps log datetime msec
 no service password-encryption
 !
-hostname Router
+hostname FT-NewYork
 !
 boot-start-marker
 boot-end-marker
@@ -1442,15 +1467,14 @@ redundancy
 !
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.255.0.77 255.255.0.0
  shutdown
  duplex auto
  speed auto
  media-type rj45
 !
 interface GigabitEthernet0/1
- no ip address
- shutdown
+ ip address 1.1.1.1 255.255.255.252
  duplex auto
  speed auto
  media-type rj45
@@ -1549,7 +1573,7 @@ end</entry>
             <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 17:10:06 UTC Wed Nov 8 2017
+! Last configuration change at 18:32:18 UTC Thu Nov 9 2017
 !
 version 15.6
 service timestamps debug datetime msec
@@ -1609,7 +1633,7 @@ redundancy
 !
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.255.0.74 255.255.0.0
  shutdown
  duplex auto
  speed auto
@@ -1718,14 +1742,14 @@ end</entry>
             <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 17:11:35 UTC Wed Nov 8 2017
+! Last configuration change at 18:32:13 UTC Thu Nov 9 2017
 !
 version 15.6
 service timestamps debug datetime msec
 service timestamps log datetime msec
 no service password-encryption
 !
-hostname Router
+hostname FT-Sydney
 !
 boot-start-marker
 boot-end-marker
@@ -1778,15 +1802,14 @@ redundancy
 !
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.255.0.78 255.255.0.0
  shutdown
  duplex auto
  speed auto
  media-type rj45
 !
 interface GigabitEthernet0/1
- no ip address
- shutdown
+ ip address 1.1.1.2 255.255.255.252
  duplex auto
  speed auto
  media-type rj45
@@ -1885,7 +1908,7 @@ end</entry>
             <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
             <entry key="Auto-generate config" type="Boolean">false</entry>
             <entry key="config" type="String">!
-! Last configuration change at 17:07:56 UTC Wed Nov 8 2017
+! Last configuration change at 18:38:16 UTC Thu Nov 9 2017
 !
 version 15.6
 service timestamps debug datetime msec
@@ -1949,7 +1972,7 @@ interface Loopback1
  ip ospf 1 area 0
 !
 interface GigabitEthernet0/0
- no ip address
+ ip address 10.255.0.86 255.255.0.0
  shutdown
  duplex auto
  speed auto
